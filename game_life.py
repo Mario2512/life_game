@@ -27,9 +27,9 @@ def animar_texto(texto, delay=0.02):
 rutina = [
     {"hora": "06:50", "tarea": "Despertar", "esfuerzo": 2},
     {"hora": "07:00", "tarea": "Desayuno", "esfuerzo": 1},
-    {"hora": "10:30", "tarea": "Almuerzo", "esfuerzo": 1},      # Añadido
+    {"hora": "10:30", "tarea": "Almuerzo", "esfuerzo": 1},      
     {"hora": "15:00", "tarea": "Comida", "esfuerzo": 1},
-    {"hora": "17:30", "tarea": "Merienda", "esfuerzo": 1},      # Añadido
+    {"hora": "17:30", "tarea": "Merienda", "esfuerzo": 1},      
     {"hora": "18:00", "tarea": "Ejercicio", "esfuerzo": 3},
     {"hora": "19:00", "tarea": "Ducha", "esfuerzo": 1},
     {"hora": "20:00", "tarea": "Estudiar", "esfuerzo": 3},
@@ -218,7 +218,7 @@ def menu():
             break
         else:
             print(Fore.RED + "❌ Opción inválida.")
-
+        print
         input(Fore.LIGHTBLACK_EX + "\nPresiona Enter para continuar...")
 
 if __name__ == "__main__":
