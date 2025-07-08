@@ -27,7 +27,9 @@ def animar_texto(texto, delay=0.02):
 rutina = [
     {"hora": "06:50", "tarea": "Despertar", "esfuerzo": 2},
     {"hora": "07:00", "tarea": "Desayuno", "esfuerzo": 1},
+    {"hora": "10:30", "tarea": "Almuerzo", "esfuerzo": 1},      # Añadido
     {"hora": "15:00", "tarea": "Comida", "esfuerzo": 1},
+    {"hora": "17:30", "tarea": "Merienda", "esfuerzo": 1},      # Añadido
     {"hora": "18:00", "tarea": "Ejercicio", "esfuerzo": 3},
     {"hora": "19:00", "tarea": "Ducha", "esfuerzo": 1},
     {"hora": "20:00", "tarea": "Estudiar", "esfuerzo": 3},
@@ -101,7 +103,9 @@ def completar_tarea(data):
                     print(Fore.RED + f"⚠️ Ya completaste la tarea '{tarea}' hoy.")
                 else:
                     puntos = esfuerzo * 3
-                    if tarea in ["Desayuno", "Comida", "Cena"]:
+                    # Solo preguntar para comidas
+                    comidas = ["Desayuno", "Almuerzo", "Comida", "Merienda", "Cena"]
+                    if tarea in comidas:
                         tipo = input(Fore.YELLOW + f"¿La {tarea.lower()} fue sana, neutra o no sana?: ").strip().lower()
                         puntos += puntos_comida.get(tipo, 0)
                     completadas_hoy.append(tarea)
