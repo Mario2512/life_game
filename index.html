@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Gestiona tu rutina diaria, gana puntos y canjea recompensas">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>Life Game - Tu Rutina Diaria</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-512.png">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span>🎯</span>
+                <span>Life Game</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <button class="theme-toggle" id="themeToggle" onclick="app.toggleTheme()" title="Cambiar tema">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <div class="level-display" id="levelDisplay">
+                    <div class="level-badge">
+                        <span class="level-icon">⭐</span>
+                        <span class="level-number" id="levelNumber">1</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar" id="xpBar" style="width: 0%"></div>
+                    </div>
+                    <div class="xp-text" id="xpText">0 / 100 XP</div>
+                </div>
+                <div class="points-display" id="pointsDisplay">
+                    💰 <span id="pointsValue">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Clock -->
+        <div class="clock" id="clock">00:00:00</div>
+
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <!-- Progress Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📊 Progreso de Hoy</h2>
+                    <span id="progressText" class="text-secondary">0/11</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Tasks Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📋 Rutina de Hoy</h2>
+                </div>
+                <div id="taskList" class="task-list">
+                    <!-- Tasks will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Store Page -->
+        <div id="storePage" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🛍️ Tienda de Recompensas</h2>
+                </div>
+                <div id="storeGrid" class="store-grid">
+                    <!-- Store items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Page -->
+        <div id="calendarPage" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📆 Calendario Mensual</h2>
+                </div>
+                <div id="calendarGrid" class="calendar-grid">
+                    <!-- Calendar will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profilePage" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">👤 Mi Perfil</h2>
+                </div>
+                <div style="text-align: center; padding: 2rem 0;">
+                    <div style="font-size: 5rem; margin-bottom: 1rem;">🏆</div>
+                    <h3>¡Sigue así!</h3>
+                    <p class="text-secondary" style="margin-top: 0.5rem;">
+                        Has completado <span id="totalTasksCompleted" style="color: #4facfe; font-weight: 700;">0</span>
+                        tareas este mes
+                    </p>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3 class="mb-md">⚙️ Configuración</h3>
+                    <button class="btn btn-secondary" onclick="app.resetMonth()"
+                        style="width: 100%; margin-bottom: 0.5rem;">
+                        🔄 Reiniciar Mes
+                    </button>
+                    <button class="btn btn-secondary" onclick="app.exportData()"
+                        style="width: 100%; margin-bottom: 0.5rem;">
+                        💾 Exportar Datos
+                    </button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('importInput').click()"
+                        style="width: 100%;">
+                        📥 Importar Datos
+                    </button>
+                    <input type="file" id="importInput" accept=".json" style="display: none;"
+                        onchange="app.importData(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Tasks Page -->
+        <div id="customTasksPage" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">⚡ Retos Personalizados</h2>
+                    <button class="btn btn-primary" onclick="app.showAddTaskModal()" style="padding: 0.5rem 1rem;">
+                        ➕ Nuevo
+                    </button>
+                </div>
+                <div id="customTasksList" class="task-list">
+                    <!-- Custom tasks will be inserted here by JavaScript -->
+                </div>
+                <div id="emptyCustomTasks" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">⚡</div>
+                    <div class="empty-state-text">No tienes retos personalizados aún.<br>¡Crea tu primer reto!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="app.navigateTo('home')" id="navHome">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Inicio</div>
+        </div>
+        <div class="nav-item" onclick="app.navigateTo('store')" id="navStore">
+            <div class="nav-icon">🛍️</div>
+            <div class="nav-label">Tienda</div>
+        </div>
+        <div class="nav-item" onclick="app.navigateTo('calendar')" id="navCalendar">
+            <div class="nav-icon">📆</div>
+            <div class="nav-label">Calendario</div>
+        </div>
+        <div class="nav-item" onclick="app.navigateTo('customTasks')" id="navCustomTasks">
+            <div class="nav-icon">⚡</div>
+            <div class="nav-label">Retos</div>
+        </div>
+        <div class="nav-item" onclick="app.navigateTo('profile')" id="navProfile">
+            <div class="nav-icon">👤</div>
+            <div class="nav-label">Perfil</div>
+        </div>
+    </nav>
+
+    <!-- Food Quality Modal -->
+    <div id="foodModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🍽️ Calidad de la Comida</h3>
+            </div>
+            <div class="modal-body">
+                <p class="text-secondary mb-md">¿Cómo fue tu <span id="mealName"></span>?</p>
+                <div class="food-quality-selector">
+                    <button class="food-quality-btn sana" onclick="app.selectFoodQuality('sana')">
+                        🥗 Sana<br><small>+5 pts</small>
+                    </button>
+                    <button class="food-quality-btn neutra" onclick="app.selectFoodQuality('neutra')">
+                        🍕 Neutra<br><small>+2 pts</small>
+                    </button>
+                    <button class="food-quality-btn no_sana" onclick="app.selectFoodQuality('no_sana')">
+                        🍔 No Sana<br><small>+0 pts</small>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeFoodModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redeem Modal -->
+    <div id="redeemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🎉 Confirmar Canje</h3>
+            </div>
+            <div class="modal-body">
+                <p>¿Quieres canjear <strong id="redeemItemName"></strong> por <span class="points"
+                        id="redeemItemCost"></span> puntos?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeRedeemModal()">Cancelar</button>
+                <button class="btn btn-success" onclick="app.confirmRedeem()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Custom Task Modal -->
+    <div id="customTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="customTaskModalTitle">➕ Nuevo Reto</h3>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">⏰ Hora</label>
+                    <input type="time" id="customTaskTime" class="form-input"
+                        style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary); font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">📝 Nombre del Reto</label>
+                    <input type="text" id="customTaskName" class="form-input" placeholder="Ej: Meditar 10 minutos"
+                        style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-primary); font-size: 1rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">💪 Nivel de Esfuerzo</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="effort-btn" data-effort="1" onclick="app.selectEffort(1)"
+                            style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; font-weight: 600;">
+                            Fácil<br><small>3 pts</small>
+                        </button>
+                        <button class="effort-btn" data-effort="2" onclick="app.selectEffort(2)"
+                            style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; font-weight: 600;">
+                            Medio<br><small>6 pts</small>
+                        </button>
+                        <button class="effort-btn" data-effort="3" onclick="app.selectEffort(3)"
+                            style="flex: 1; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--bg-card); color: var(--text-primary); cursor: pointer; font-weight: 600;">
+                            Difícil<br><small>9 pts</small>
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="customTaskIsMeal"
+                            style="width: 20px; height: 20px; cursor: pointer;">
+                        <span style="font-weight: 600;">🍽️ Es una comida (permite seleccionar calidad)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeCustomTaskModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="app.saveCustomTask()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Custom Task Modal -->
+    <div id="deleteTaskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">🗑️ Eliminar Reto</h3>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar el reto "<strong id="deleteTaskName"></strong>"?</p>
+                <p class="text-secondary" style="margin-top: 0.5rem; font-size: 0.9rem;">Esta acción no se puede
+                    deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="app.closeDeleteTaskModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="app.confirmDeleteTask()"
+                    style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+
+</html>
